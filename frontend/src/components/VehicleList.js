@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getVehicles } from "../services/api";
+import { getVehicles, deleteVehicle } from "../services/api";
 import AddVehicleForm from "./AddVehicleForm";
 
 const VehicleList = () => {
@@ -14,6 +14,13 @@ const VehicleList = () => {
     fetchVehicles();
   }, []);
 
+  const handleDelete = async (id) => {
+    if (window.confirm("Da li ste sigurni da želite obrisati ovo vozilo?")) {
+      await deleteVehicle(id);
+      fetchVehicles();
+    }
+  };
+
   return (
     <div>
       <h1>Lista Vozila</h1>
@@ -22,6 +29,9 @@ const VehicleList = () => {
         {vehicles.map((vehicle) => (
           <li key={vehicle.id}>
             {vehicle.brand} {vehicle.model} - {vehicle.fuel_type}
+            <button onClick={() => handleDelete(vehicle.id)} style={{ marginLeft: "10px", color: "red" }}>
+              Obriši
+            </button>
           </li>
         ))}
       </ul>

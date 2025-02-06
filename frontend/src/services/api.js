@@ -14,3 +14,9 @@ export const addVehicle = async (vehicle) => {
   const response = await axios.post(`${API_URL}/vehicles`, vehicle);
   return response.data;
 };
+
+//Obriši vozilo
+export const deleteVehicle = async (id) => {
+    await axios.delete(`${API_URL}/vehicles/${id}`);
+  };
+  
