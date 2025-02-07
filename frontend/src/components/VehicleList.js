@@ -49,7 +49,7 @@ const VehicleList = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-gray-100 rounded-lg shadow-lg">
-      <h1 className="text-3xl font-bold text-center mb-6">Lista Vozila</h1>
+      <h1 className="text-3xl font-bold text-center mb-6">Lista vozila</h1>
       <AddVehicleForm onVehicleAdded={fetchVehicles} />
       <ul className="mt-4">
         {vehicles.map((vehicle) => (

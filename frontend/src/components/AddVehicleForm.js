@@ -41,7 +41,7 @@ const AddVehicleForm = ({ onVehicleAdded }) => {
 
   return (
     <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md flex flex-col space-y-2">
-      <h2 className="text-2xl font-bold mb-4">Dodaj Novo Vozilo</h2>
+      <h2 className="text-2xl font-bold mb-4">Dodaj novo vozilo</h2>
       <input type="text" name="brand" placeholder="Marka" value={vehicle.brand} onChange={handleChange} required className="border p-2 rounded" />
       <input type="text" name="model" placeholder="Model" value={vehicle.model} onChange={handleChange} required className="border p-2 rounded" />
       <input type="text" name="chassis_number" placeholder="Broj šasije" value={vehicle.chassis_number} onChange={handleChange} required className="border p-2 rounded" />
@@ -51,7 +51,7 @@ const AddVehicleForm = ({ onVehicleAdded }) => {
         <option value="dizel">Dizel</option>
         <option value="plin">Plin</option>
       </select>
-      <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">Dodaj Vozilo</button>
+      <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">Dodaj vozilo</button>
     </form>
   );
 };
