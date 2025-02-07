@@ -15,8 +15,14 @@ export const addVehicle = async (vehicle) => {
   return response.data;
 };
 
-//Obriši vozilo
+// Obriši vozilo
 export const deleteVehicle = async (id) => {
     await axios.delete(`${API_URL}/vehicles/${id}`);
+  };
+
+// Uredi vozilo
+export const updateVehicle = async (id, updatedData) => {
+    const response = await axios.put(`${API_URL}/vehicles/${id}`, updatedData);
+    return response.data;
   };
   
