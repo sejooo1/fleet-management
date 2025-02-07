@@ -1,0 +1,1 @@
+<img src="/pong.png" alt="PONG Logo" className="h-12 w-auto" />
