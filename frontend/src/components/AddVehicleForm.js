@@ -32,7 +32,7 @@ const AddVehicleForm = ({ onVehicleAdded }) => {
         fuel_type: "benzin",
         production_year: "",
       });
-      onVehicleAdded(); // Osvježavanje liste vozila
+      onVehicleAdded();
     } catch (error) {
       console.error("Greška pri dodavanju vozila:", error);
       alert("Došlo je do greške!");
@@ -40,21 +40,18 @@ const AddVehicleForm = ({ onVehicleAdded }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Dodaj Novo Vozilo</h2>
-      <input type="text" name="brand" placeholder="Marka" value={vehicle.brand} onChange={handleChange} required />
-      <input type="text" name="model" placeholder="Model" value={vehicle.model} onChange={handleChange} required />
-      <input type="text" name="chassis_number" placeholder="Broj šasije" value={vehicle.chassis_number} onChange={handleChange} required />
-      <input type="text" name="engine_number" placeholder="Broj motora" value={vehicle.engine_number} onChange={handleChange} required />
-      <input type="number" name="power_kw" placeholder="Snaga (kW)" value={vehicle.power_kw} onChange={handleChange} required />
-      <input type="number" name="power_hp" placeholder="Snaga (HP)" value={vehicle.power_hp} onChange={handleChange} required />
-      <select name="fuel_type" value={vehicle.fuel_type} onChange={handleChange}>
+    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md flex flex-col space-y-2">
+      <h2 className="text-2xl font-bold mb-4">Dodaj Novo Vozilo</h2>
+      <input type="text" name="brand" placeholder="Marka" value={vehicle.brand} onChange={handleChange} required className="border p-2 rounded" />
+      <input type="text" name="model" placeholder="Model" value={vehicle.model} onChange={handleChange} required className="border p-2 rounded" />
+      <input type="text" name="chassis_number" placeholder="Broj šasije" value={vehicle.chassis_number} onChange={handleChange} required className="border p-2 rounded" />
+      <input type="number" name="power_kw" placeholder="Snaga (kW)" value={vehicle.power_kw} onChange={handleChange} required className="border p-2 rounded" />
+      <select name="fuel_type" value={vehicle.fuel_type} onChange={handleChange} className="border p-2 rounded">
         <option value="benzin">Benzin</option>
         <option value="dizel">Dizel</option>
         <option value="plin">Plin</option>
       </select>
-      <input type="number" name="production_year" placeholder="Godina proizvodnje" value={vehicle.production_year} onChange={handleChange} required />
-      <button type="submit">Dodaj Vozilo</button>
+      <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">Dodaj Vozilo</button>
     </form>
   );
 };
