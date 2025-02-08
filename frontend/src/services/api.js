@@ -39,5 +39,16 @@ export const deleteTrip = async (id) => {
 };
 
 export const updateTripStatus = (tripId, status) => {
-  return axios.put(`/api/trips/${tripId}/status`, status);
+  return axios.put(
+    `${API_URL}/trips/${tripId}/status`, 
+    { status },
+    { headers: { "Content-Type": "application/json" } }
+  );
+};
+
+export const getReport = async (vehicleId, startDate, endDate) => {
+  const response = await axios.get(`${API_URL}/reports/usage`, {
+    params: { vehicle_id: vehicleId, start_date: startDate, end_date: endDate },
+  });
+  return response.data;
 };

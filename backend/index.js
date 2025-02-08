@@ -8,12 +8,15 @@ dotenv.config();
 const app = express();
 const vehicleRoutes = require("./routes/vehicles");
 const tripRoutes = require("./routes/trips");
+const reportsRoutes = require("./routes/reports");
+
 
 app.use(cors());
 app.use(express.json());
 
 app.use("/api/vehicles", vehicleRoutes);
 app.use("/api/trips", tripRoutes);
+app.use("/api/reports", reportsRoutes);
 
 app.get("/", (req, res) => {
   res.send("Fleet Management API is running...");

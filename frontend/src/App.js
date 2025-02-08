@@ -6,6 +6,9 @@ import VehicleList from "./components/VehicleList";
 import AddVehicleForm from "./components/AddVehicleForm";
 import TripsList from "./components/TripsList";
 import AddTripForm from "./components/AddTripForm";
+import ReportsForm from "./components/ReportsForm";
+
+
 
 function App() {
   return (
@@ -17,7 +20,8 @@ function App() {
           <Route path="/vehicles" element={<VehicleList />} />
           <Route path="/add-vehicle" element={<AddVehicleForm onVehicleAdded={() => window.location.href = "/vehicles"} />} />
           <Route path="/trips" element={<TripsList />} />
-          <Route path="/add-trip" element={<AddTripForm />} />
+          <Route path="/add-trip" element={<AddTripForm onTripAdded={() => window.location.href = "/trips"} />} />
+          <Route path="/reports" element={<ReportsForm />} />
         </Routes>
       </div>
     </Router>

@@ -10,6 +10,8 @@ const Navbar = () => {
           <li><Link to="/" className="text-white hover:underline">Početna</Link></li>
           <li><Link to="/vehicles" className="text-white hover:underline">Lista vozila</Link></li>
           <li><Link to="/trips" className="text-white hover:underline">Lista putnih naloga</Link></li>
+          <Link to="/reports" className="text-white hover:text-gray-300">Kreiranje izvještaja</Link>
+
         </ul>
       </div>
     </nav>

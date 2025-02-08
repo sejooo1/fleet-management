@@ -39,6 +39,7 @@ router.get("/", async (req, res) => {
 router.put("/:id/status", async (req, res) => {
   try {
       console.log("Primljen zahtjev za ažuriranje statusa:", req.body);
+      console.log("ID putnog naloga:", req.params.id);
 
       const status = String(req.body.status).trim(); // Osigurava da status bude string
 
@@ -47,13 +48,14 @@ router.put("/:id/status", async (req, res) => {
       }
 
       const updatedTrip = await Trip.updateStatus(req.params.id, status);
+      console.log("Putni nalog ažuriran:", updatedTrip);
+
       res.json(updatedTrip);
   } catch (err) {
-      console.error(err.message);
+      console.error("Greška pri ažuriranju statusa:", err.message);
       res.status(500).send("Server Error");
   }
 });
-
 
 
 router.delete("/:id", async (req, res) => {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getTrips, updateTripStatus } from "../services/api";
+import { getTrips, updateTripStatus, deleteTrip } from "../services/api";
 import { Link } from "react-router-dom";
 
 const formatDateTime = (isoString) => {
@@ -40,28 +40,35 @@ const TripsList = () => {
 
   const handleStatusChange = async (tripId) => {
     try {
-      await updateTripStatus(tripId, { status: newStatus });
+      await updateTripStatus(tripId, newStatus);
       setEditingStatus(null);
       fetchTrips();
     } catch (error) {
       console.error("Greška pri ažuriranju statusa:", error);
     }
   };
-  
-  
+
+  const handleDeleteTrip = async (tripId) => {
+    if (window.confirm("Da li ste sigurni da želite obrisati ovaj putni nalog?")) {
+      try {
+        await deleteTrip(tripId);
+        fetchTrips();
+      } catch (error) {
+        console.error("Greška pri brisanju putnog naloga:", error);
+      }
+    }
+  };
 
   return (
     <div className="max-w-5xl mx-auto p-6 bg-gray-100 rounded-lg shadow-lg">
       <h1 className="text-3xl font-bold text-center mb-6">Lista putnih naloga</h1>
 
-      {/* Dugme za dodavanje putnog naloga */}
       <div className="text-center mb-6">
-        <Link to="/add-trip" className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow-md transition duration-300">
+        <Link to="/add-trip" className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-lg shadow-md transition duration-300">
           + Dodaj novi putni nalog
         </Link>
       </div>
 
-      {/* Grid layout za prikaz naloga */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {trips.map((trip) => (
           <div key={trip.id} className="bg-white p-5 rounded-lg shadow-md">
@@ -72,20 +79,30 @@ const TripsList = () => {
               <button 
                 onClick={() => toggleDetails(trip.id)} 
                 disabled={editingStatus} 
-                className="bg-gray-300 hover:bg-gray-400 text-black px-3 py-1 rounded"
+                className={`px-3 py-1 rounded transition duration-200 ${
+                  expandedTrip === trip.id ? "bg-gray-400" : "bg-gray-300 hover:bg-gray-400"
+                }`}
               >
                 {expandedTrip === trip.id ? "Sakrij" : "Detalji"}
               </button>
 
               <button 
                 onClick={() => setEditingStatus(editingStatus === trip.id ? null : trip.id)} 
-                className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded"
+                className={`px-3 py-1 rounded transition duration-200 ${
+                  editingStatus === trip.id ? "bg-blue-400" : "bg-blue-500 hover:bg-blue-600 text-white"
+                }`}
               >
-                {editingStatus === trip.id ? "Otkaži" : "Izmijeni status"}
+                {editingStatus === trip.id ? "Zatvori" : "Izmijeni status"}
+              </button>
+
+              <button 
+                onClick={() => handleDeleteTrip(trip.id)}
+                className="bg-red-400 hover:bg-red-500 text-white px-3 py-1 rounded transition duration-200"
+              >
+                Obriši
               </button>
             </div>
 
-            {/* Detalji putnog naloga */}
             {expandedTrip === trip.id && (
               <div className="mt-3 text-sm text-gray-700 border-t pt-3">
                 <p><strong>Broj putnika:</strong> {trip.passengers}</p>
@@ -96,7 +113,6 @@ const TripsList = () => {
               </div>
             )}
 
-            {/* Forma za izmjenu statusa */}
             {editingStatus === trip.id && (
               <div className="mt-3">
                 <select 
