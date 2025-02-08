@@ -27,25 +27,35 @@ router.delete("/:id", async (req, res) => {
 });
 
 router.put("/:id", async (req, res) => {
+  const { id } = req.params;
+  const { brand, model, chassis_number, engine_number, power_kw, power_hp, fuel_type, production_year } = req.body;
+
   try {
-    const { id } = req.params;
-    const { brand, model, chassis_number, engine_number, power_kw, power_hp, fuel_type, production_year } = req.body;
+      console.log("Primljen zahtjev za ažuriranje vozila:");
+      console.log("ID:", id);
+      console.log("Podaci:", req.body);
 
-    const updatedVehicle = await pool.query(
-      "UPDATE vehicles SET brand=$1, model=$2, chassis_number=$3, engine_number=$4, power_kw=$5, power_hp=$6, fuel_type=$7, production_year=$8 WHERE id=$9 RETURNING *",
-      [brand, model, chassis_number, engine_number, power_kw, power_hp, fuel_type, production_year, id]
-    );
+      // Provjera da li vozilo postoji
+      const existingVehicle = await pool.query("SELECT * FROM vehicles WHERE id = $1", [id]);
+      if (existingVehicle.rows.length === 0) {
+          console.error("Greška: Vozilo ne postoji u bazi.");
+          return res.status(404).send({ error: "Vozilo nije pronađeno." });
+      }
 
-    if (updatedVehicle.rows.length === 0) {
-      return res.status(404).json({ error: "Vozilo nije pronađeno" });
-    }
+      // Update upit
+      const updatedVehicle = await pool.query(
+          "UPDATE vehicles SET brand=$1, model=$2, chassis_number=$3, engine_number=$4, power_kw=$5, power_hp=$6, fuel_type=$7, production_year=$8 WHERE id=$9 RETURNING *",
+          [brand, model, chassis_number, engine_number, power_kw, power_hp, fuel_type, production_year, id]
+      );
 
-    res.json(updatedVehicle.rows[0]);
+      console.log("Vozilo ažurirano:", updatedVehicle.rows[0]);
+      res.json(updatedVehicle.rows[0]);
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error");
+      console.error("Greška pri ažuriranju vozila:", err);
+      res.status(500).send({ error: err.message });
   }
 });
+
 
 
 module.exports = router;
