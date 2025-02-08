@@ -40,13 +40,14 @@ const TripsList = () => {
 
   const handleStatusChange = async (tripId) => {
     try {
-        await updateTripStatus(tripId, newStatus);
+      await updateTripStatus(tripId, { status: newStatus });
       setEditingStatus(null);
-      fetchTrips(); 
+      fetchTrips();
     } catch (error) {
       console.error("Greška pri ažuriranju statusa:", error);
     }
   };
+  
   
 
   return (
