@@ -40,7 +40,7 @@ const TripsList = () => {
 
   const handleStatusChange = async (tripId) => {
     try {
-      await updateTripStatus(tripId, { status: newStatus });
+        await updateTripStatus(tripId, newStatus);
       setEditingStatus(null);
       fetchTrips(); 
     } catch (error) {
