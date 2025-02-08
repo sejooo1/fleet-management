@@ -42,11 +42,12 @@ const TripsList = () => {
     try {
       await updateTripStatus(tripId, { status: newStatus });
       setEditingStatus(null);
-      fetchTrips();
+      fetchTrips(); 
     } catch (error) {
       console.error("Greška pri ažuriranju statusa:", error);
     }
   };
+  
 
   return (
     <div className="max-w-5xl mx-auto p-6 bg-gray-100 rounded-lg shadow-lg">

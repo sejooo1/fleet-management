@@ -36,26 +36,24 @@ router.get("/", async (req, res) => {
   }
 });
 
-const normalizeStatus = (status) => status.normalize("NFC"); // Osigurava ispravan encoding
-
 router.put("/:id/status", async (req, res) => {
   try {
       console.log("Primljen zahtjev za ažuriranje statusa:", req.body);
 
-      const { status } = req.body;
-      const normalizedStatus = normalizeStatus(status);
+      const status = String(req.body.status).trim(); // Osigurava da status bude string
 
-      if (!['evidentiran', 'potvrđen', 'odbijen', 'završen'].includes(normalizedStatus)) {
+      if (!['evidentiran', 'potvrđen', 'odbijen', 'završen'].includes(status)) {
           return res.status(400).json({ error: "Invalid status value" });
       }
 
-      const updatedTrip = await Trip.updateStatus(req.params.id, normalizedStatus);
+      const updatedTrip = await Trip.updateStatus(req.params.id, status);
       res.json(updatedTrip);
   } catch (err) {
       console.error(err.message);
       res.status(500).send("Server Error");
   }
 });
+
 
 
 router.delete("/:id", async (req, res) => {

@@ -38,7 +38,6 @@ export const deleteTrip = async (id) => {
   await axios.delete(`${API_URL}/trips/${id}`);
 };
 
-export const updateTripStatus = async (id, status) => {
-  const response = await axios.put(`${API_URL}/trips/${id}/status`, { status });
-  return response.data;
+export const updateTripStatus = (tripId, status) => {
+  return axios.put(`/api/trips/${tripId}/status`, status);
 };
