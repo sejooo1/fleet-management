@@ -17,14 +17,16 @@ const VehicleList = () => {
     production_year: "",
   });
 
-  const fetchVehicles = async () => {
-    const data = await getVehicles();
-    setVehicles(data);
-  };
+  const [sortConfig, setSortConfig] = useState({ key: "brand", direction: "asc" });
 
   useEffect(() => {
     fetchVehicles();
   }, []);
+
+  const fetchVehicles = async () => {
+    const data = await getVehicles();
+    setVehicles(data);
+  };
 
   const handleDelete = async (id) => {
     if (window.confirm("Da li ste sigurni da želite obrisati ovo vozilo?")) {
@@ -50,25 +52,51 @@ const VehicleList = () => {
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-    console.log("Šaljem zahtjev za ažuriranje vozila:", editVehicle, editData);
     await updateVehicle(editVehicle, editData);
+    setVehicles((prev) =>
+      prev.map((v) => (v.id === editVehicle ? { ...v, ...editData } : v))
+    );
     setEditVehicle(null);
-    fetchVehicles();
   };
-  
+
+  const handleSortChange = (e) => {
+    const [key, direction] = e.target.value.split("-");
+    setSortConfig({ key, direction });
+
+    setVehicles((prev) =>
+      [...prev].sort((a, b) => {
+        if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
+        if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
+        return 0;
+      })
+    );
+  };
 
   return (
     <div className="max-w-5xl mx-auto p-6 bg-gray-100 rounded-lg shadow-lg">
       <h1 className="text-3xl font-bold text-center mb-6">Lista vozila</h1>
 
-      {/* Dugme za dodavanje vozila */}
-      <div className="text-center mb-6">
+      {/* Kontrole za dodavanje i sortiranje */}
+      <div className="flex justify-between items-center mb-6">
         <Link
           to="/add-vehicle"
           className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-lg shadow-md transition duration-300"
         >
           + Dodaj novo vozilo
         </Link>
+
+        {/* Dropdown za sortiranje */}
+        <select
+          onChange={handleSortChange}
+          className="border p-2 rounded-lg bg-white shadow-sm"
+        >
+          <option value="brand-asc">Marka (A-Z)</option>
+          <option value="brand-desc">Marka (Z-A)</option>
+          <option value="model-asc">Model (A-Z)</option>
+          <option value="model-desc">Model (Z-A)</option>
+          <option value="production_year-desc">Godina (Najnoviji)</option>
+          <option value="production_year-asc">Godina (Najstariji)</option>
+        </select>
       </div>
 
       {/* Grid layout */}
@@ -79,27 +107,13 @@ const VehicleList = () => {
             <p className="text-gray-500">{vehicle.fuel_type}</p>
 
             <div className="mt-3 flex gap-2">
-              <button 
-                onClick={() => toggleDetails(vehicle)} 
-                disabled={editVehicle} 
-                className={`px-3 py-1 rounded transition duration-200 ${
-                  expandedVehicle === vehicle.id ? "bg-gray-400" : "bg-gray-300 hover:bg-gray-400"
-                }`}
-              >
+              <button onClick={() => toggleDetails(vehicle)} disabled={editVehicle} className="bg-gray-300 hover:bg-gray-400 px-3 py-1 rounded">
                 {expandedVehicle === vehicle.id ? "Sakrij" : "Detalji"}
               </button>
-              <button 
-                onClick={() => handleEdit(vehicle)} 
-                className={`px-3 py-1 rounded transition duration-200 ${
-                  editVehicle === vehicle.id ? "bg-blue-400" : "bg-blue-500 hover:bg-blue-600 text-white"
-                }`}
-              >
+              <button onClick={() => handleEdit(vehicle)} className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded">
                 {editVehicle === vehicle.id ? "Zatvori" : "Uredi"}
               </button>
-              <button 
-                onClick={() => handleDelete(vehicle.id)} 
-                className="bg-red-400 hover:bg-red-500 text-white px-3 py-1 rounded transition duration-200"
-              >
+              <button onClick={() => handleDelete(vehicle.id)} className="bg-red-400 hover:bg-red-500 text-white px-3 py-1 rounded">
                 Obriši
               </button>
             </div>

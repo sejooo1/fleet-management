@@ -36,11 +36,38 @@ const AddTripForm = ({ onTripAdded }) => {
   const validateForm = () => {
     let newErrors = {};
 
+    // Obavezna polja
     Object.keys(trip).forEach((key) => {
       if (!trip[key]) {
         newErrors[key] = "Ovo polje je obavezno!";
       }
     });
+
+    // Početak perioda mora biti prije kraja
+    if (trip.start_time && trip.end_time && trip.start_time >= trip.end_time) {
+      newErrors.start_time = "Početni datum mora biti prije krajnjeg datuma.";
+      newErrors.end_time = "Krajnji datum mora biti nakon početnog.";
+    }
+
+    // Broj putnika mora biti pozitivan broj
+    if (trip.passengers && (isNaN(trip.passengers) || trip.passengers <= 0)) {
+      newErrors.passengers = "Broj putnika mora biti veći od 0.";
+    }
+
+    // Ime vozača mora sadržavati samo slova i razmake
+    if (trip.driver_name && !/^[A-Za-zčćžšđ\s]+$/.test(trip.driver_name)) {
+      newErrors.driver_name = "Ime vozača smije sadržavati samo slova i razmak.";
+    }
+
+    // Polazna i dolazna lokacija ne mogu biti iste
+    if (trip.start_location && trip.end_location && trip.start_location === trip.end_location) {
+      newErrors.end_location = "Dolazna lokacija mora biti različita od polazne.";
+    }
+
+    // Vozilo mora biti odabrano
+    if (!trip.vehicle_id) {
+      newErrors.vehicle_id = "Morate odabrati vozilo.";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -50,7 +77,7 @@ const AddTripForm = ({ onTripAdded }) => {
     e.preventDefault();
     if (!validateForm()) return;
 
-    setServerError(""); // Reset server error
+    setServerError("");
 
     try {
       await addTrip({ ...trip, status: "evidentiran" });
