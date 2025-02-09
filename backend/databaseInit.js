@@ -2,6 +2,16 @@ const pool = require("./db");
 
 const createTables = async () => {
   try {
+    // Kreiranje tabele korisnika
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        username VARCHAR(255) UNIQUE NOT NULL,
+        password TEXT NOT NULL,
+        role VARCHAR(50) NOT NULL CHECK (role IN ('admin', 'user'))
+      );
+    `);
+
     // Kreiranje tabele vozila
     await pool.query(`
       CREATE TABLE IF NOT EXISTS vehicles (

@@ -1,8 +1,11 @@
 const express = require("express");
 const Trip = require("../models/Trip");
+const { authMiddleware, adminMiddleware } = require("../middleware/authMiddleware");
+
 const router = express.Router();
 
-router.post("/", async (req, res) => {
+// Kreiranje putnog naloga (DOSTUPNO SVIM KORISNICIMA)
+router.post("/", authMiddleware, async (req, res) => {
   const { vehicle_id, driver_name, passengers, start_location, end_location, start_time, end_time } = req.body;
 
   if (!vehicle_id || !driver_name || !start_time || !end_time) {
@@ -12,7 +15,6 @@ router.post("/", async (req, res) => {
   try {
     // Provjera da li postoji rezervacija u preklapajućem periodu
     const conflictTrips = await Trip.checkConflict(vehicle_id, start_time, end_time);
-
     if (conflictTrips.length > 0) {
       return res.status(400).json({ error: "Vozilo je već rezervisano u ovom periodu." });
     }
@@ -36,45 +38,47 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/", async (req, res) => {
+// Dohvatanje svih putnih naloga (DOSTUPNO SVIM KORISNICIMA)
+router.get("/", authMiddleware, async (req, res) => {
   try {
-      const trips = await Trip.getAll();
-      res.json(trips);
+    const trips = await Trip.getAll();
+    res.json(trips);
   } catch (err) {
-      console.error(err.message);
-      res.status(500).send("Server Error");
+    console.error(err.message);
+    res.status(500).send("Server Error");
   }
 });
 
-router.put("/:id/status", async (req, res) => {
+// Ažuriranje statusa putnog naloga (SAMO ADMIN)
+router.put("/:id/status", authMiddleware, adminMiddleware, async (req, res) => {
   try {
-      console.log("Primljen zahtjev za ažuriranje statusa:", req.body);
-      console.log("ID putnog naloga:", req.params.id);
+    console.log("Primljen zahtjev za ažuriranje statusa:", req.body);
+    console.log("ID putnog naloga:", req.params.id);
 
-      const status = String(req.body.status).trim(); // Osigurava da status bude string
+    const status = String(req.body.status).trim();
 
-      if (!['evidentiran', 'potvrđen', 'odbijen', 'završen'].includes(status)) {
-          return res.status(400).json({ error: "Invalid status value" });
-      }
+    if (!['evidentiran', 'potvrđen', 'odbijen', 'završen'].includes(status)) {
+      return res.status(400).json({ error: "Nevalidan status" });
+    }
 
-      const updatedTrip = await Trip.updateStatus(req.params.id, status);
-      console.log("Putni nalog ažuriran:", updatedTrip);
+    const updatedTrip = await Trip.updateStatus(req.params.id, status);
+    console.log("Putni nalog ažuriran:", updatedTrip);
 
-      res.json(updatedTrip);
+    res.json(updatedTrip);
   } catch (err) {
-      console.error("Greška pri ažuriranju statusa:", err.message);
-      res.status(500).send("Server Error");
+    console.error("Greška pri ažuriranju statusa:", err.message);
+    res.status(500).send("Server Error");
   }
 });
 
-
-router.delete("/:id", async (req, res) => {
+// Brisanje putnog naloga (SAMO ADMIN)
+router.delete("/:id", authMiddleware, adminMiddleware, async (req, res) => {
   try {
-      const response = await Trip.delete(req.params.id);
-      res.json(response);
+    const response = await Trip.delete(req.params.id);
+    res.json(response);
   } catch (err) {
-      console.error(err.message);
-      res.status(500).send("Server Error");
+    console.error(err.message);
+    res.status(500).send("Server Error");
   }
 });
 
