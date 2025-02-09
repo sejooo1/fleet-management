@@ -90,7 +90,20 @@ const VehicleList = () => {
               {/* Dugmad za uređivanje i brisanje su vidljiva samo za admina */}
               {user?.role === "admin" && (
                 <>
-                  <button onClick={() => setEditVehicle(vehicle.id)} className="bg-blue-500 text-white px-3 py-1 rounded">Uredi</button>
+                  <button onClick={() => {
+    setEditVehicle(vehicle.id);
+    setEditData({
+        brand: vehicle.brand,
+        model: vehicle.model,
+        chassis_number: vehicle.chassis_number,
+        engine_number: vehicle.engine_number,
+        power_kw: vehicle.power_kw,
+        power_hp: vehicle.power_hp,
+        fuel_type: vehicle.fuel_type,
+        production_year: vehicle.production_year,
+    });
+}} className="bg-blue-500 text-white px-3 py-1 rounded">Uredi</button>
+
                   <button onClick={() => handleDelete(vehicle.id)} className="bg-red-400 text-white px-3 py-1 rounded">Obriši</button>
                 </>
               )}

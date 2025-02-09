@@ -12,6 +12,7 @@ import ReportsForm from "./components/ReportsForm";
 
 function App() {
   return (
+    <div className="pt-16">
     <Router>
       <Navbar />
       <div className="p-6">
@@ -25,6 +26,7 @@ function App() {
         </Routes>
       </div>
     </Router>
+    </div>
   );
 }
 
