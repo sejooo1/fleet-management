@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getTrips, updateTripStatus, deleteTrip, getVehicles } from "../services/api";
 import { Link } from "react-router-dom";
+import { getCurrentUser } from "../services/auth"; // Dohvaćanje korisnika
 
 const formatDateTime = (isoString) => {
   if (!isoString) return "";
@@ -11,7 +12,7 @@ const formatDateTime = (isoString) => {
     year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
-  }).format(date);
+  }).format(new Date(isoString));
 };
 
 const TripsList = () => {
@@ -21,9 +22,11 @@ const TripsList = () => {
   const [editingStatus, setEditingStatus] = useState(null);
   const [newStatus, setNewStatus] = useState("");
   const [sortConfig, setSortConfig] = useState({ key: "start_time", direction: "desc" });
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     fetchData();
+    setUser(getCurrentUser()); // Postavi trenutno ulogovanog korisnika
   }, []);
 
   const fetchData = async () => {
@@ -126,19 +129,25 @@ const TripsList = () => {
                 {expandedTrip === trip.id ? "Sakrij" : "Detalji"}
               </button>
 
-              <button 
-                onClick={() => setEditingStatus(editingStatus === trip.id ? null : trip.id)} 
-                className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded"
-              >
-                {editingStatus === trip.id ? "Zatvori" : "Izmijeni status"}
-              </button>
+              {/* Admin vidi dugme za izmjenu statusa */}
+              {user?.role === "admin" && (
+                <button 
+                  onClick={() => setEditingStatus(editingStatus === trip.id ? null : trip.id)} 
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded"
+                >
+                  {editingStatus === trip.id ? "Zatvori" : "Izmijeni status"}
+                </button>
+              )}
 
-              <button 
-                onClick={() => handleDeleteTrip(trip.id)}
-                className="bg-red-400 hover:bg-red-500 text-white px-3 py-1 rounded"
-              >
-                Obriši
-              </button>
+              {/* Admin vidi dugme za brisanje */}
+              {user?.role === "admin" && (
+                <button 
+                  onClick={() => handleDeleteTrip(trip.id)}
+                  className="bg-red-400 hover:bg-red-500 text-white px-3 py-1 rounded"
+                >
+                  Obriši
+                </button>
+              )}
             </div>
 
             {expandedTrip === trip.id && (
@@ -151,7 +160,8 @@ const TripsList = () => {
               </div>
             )}
 
-            {editingStatus === trip.id && (
+            {/* Admin vidi dropdown za izmjenu statusa */}
+            {user?.role === "admin" && editingStatus === trip.id && (
               <div className="mt-3">
                 <select value={newStatus} onChange={(e) => setNewStatus(e.target.value)} className="border p-2 rounded w-full">
                   <option value="">Odaberi status</option>

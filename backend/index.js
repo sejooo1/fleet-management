@@ -5,6 +5,7 @@ const pool = require("./db");
 
 dotenv.config();
 
+
 const app = express();
 const vehicleRoutes = require("./routes/vehicles");
 const tripRoutes = require("./routes/trips");

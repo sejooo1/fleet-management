@@ -4,7 +4,7 @@ const { authMiddleware, adminMiddleware } = require("../middleware/authMiddlewar
 
 const router = express.Router();
 
-// 🟢 Dozvoli svima da vide listu vozila
+
 router.get("/", async (req, res) => {
     try {
         const vehicles = await Vehicle.getAll();
@@ -14,7 +14,7 @@ router.get("/", async (req, res) => {
     }
 });
 
-// 🟢 Dozvoli svima da vide detalje vozila
+
 router.get("/:id", async (req, res) => {
     try {
         const vehicle = await Vehicle.getById(req.params.id);
@@ -24,7 +24,7 @@ router.get("/:id", async (req, res) => {
     }
 });
 
-// 🔒 Samo admin može dodati vozilo
+
 router.post("/", authMiddleware, adminMiddleware, async (req, res) => {
     try {
         const vehicle = await Vehicle.create(req.body);
@@ -34,7 +34,7 @@ router.post("/", authMiddleware, adminMiddleware, async (req, res) => {
     }
 });
 
-// 🔒 Samo admin može obrisati vozilo
+
 router.delete("/:id", authMiddleware, adminMiddleware, async (req, res) => {
     try {
         const response = await Vehicle.delete(req.params.id);
@@ -44,7 +44,7 @@ router.delete("/:id", authMiddleware, adminMiddleware, async (req, res) => {
     }
 });
 
-// 🔒 Samo admin može ažurirati vozilo
+
 router.put("/:id", authMiddleware, adminMiddleware, async (req, res) => {
     const { id } = req.params;
     const vehicleData = req.body;

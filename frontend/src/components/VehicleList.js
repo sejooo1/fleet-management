@@ -46,27 +46,26 @@ const VehicleList = () => {
     <div className="max-w-5xl mx-auto p-6 bg-gray-100 rounded-lg shadow-lg">
       <h1 className="text-3xl font-bold text-center mb-6">Lista vozila</h1>
 
-      {/* Dugme za dodavanje vozila (vidljivo samo za admina) */}
-      {user?.role === "admin" && (
-        <div className="mb-6">
-          <Link to="/add-vehicle" className="bg-blue-500 text-white px-5 py-2 rounded-lg">+ Dodaj novo vozilo</Link>
-        </div>
-      )}
+      {/* Dugme za dodavanje vozila i sortiranje u istom redu */}
+      <div className="flex justify-between items-center mb-6">
+        {user?.role === "admin" ? (
+          <Link to="/add-vehicle" className="bg-blue-500 text-white px-5 py-2 rounded-lg shadow-md">
+            + Dodaj novo vozilo
+          </Link>
+        ) : (
+          <div></div> // Ovaj div osigurava da dropdown uvijek ostane desno
+        )}
+        <select 
+          onChange={(e) => {
+            const [key, direction] = e.target.value.split("-");
+            setSortConfig({ key, direction });
 
-      {/* Dropdown za sortiranje */}
-      <div className="flex justify-end mb-4">
-        <select onChange={(e) => {
-          const [key, direction] = e.target.value.split("-");
-          setSortConfig({ key, direction });
-
-          setVehicles((prev) =>
-            [...prev].sort((a, b) => {
-              if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
-              if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
-              return 0;
-            })
-          );
-        }} className="border p-2 rounded-lg bg-white shadow-sm">
+            setVehicles((prev) =>
+              [...prev].sort((a, b) => (a[key] < b[key] ? (direction === "asc" ? -1 : 1) : a[key] > b[key] ? (direction === "asc" ? 1 : -1) : 0))
+            );
+          }} 
+          className="border p-2 rounded-lg bg-white shadow-sm"
+        >
           <option value="brand-asc">Marka (A-Z)</option>
           <option value="brand-desc">Marka (Z-A)</option>
           <option value="model-asc">Model (A-Z)</option>

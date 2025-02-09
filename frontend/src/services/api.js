@@ -6,6 +6,7 @@ const API_URL = "https://fleet-management-production.up.railway.app/api";
 // Funkcija za dobijanje tokena
 const getAuthHeaders = () => {
   const token = localStorage.getItem("token"); // Uzima token iz localStorage
+  console.log("Token koji se koristi:", token); // Debugging
   return token ? { Authorization: `Bearer ${token}` } : {}; // Ako nema tokena, header ostaje prazan
 };
 
@@ -17,6 +18,7 @@ export const getVehicles = async () => {
 
 export const addVehicle = async (vehicle) => {
   const response = await axios.post(`${API_URL}/vehicles`, vehicle, { headers: getAuthHeaders() });
+  console.log("Odgovor API-ja:", response.data); // Debugging
   return response.data;
 };
 
