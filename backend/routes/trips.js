@@ -5,7 +5,7 @@ const { authMiddleware, adminMiddleware } = require("../middleware/authMiddlewar
 const router = express.Router();
 
 // Kreiranje putnog naloga (DOSTUPNO SVIM KORISNICIMA)
-router.post("/", authMiddleware, async (req, res) => {
+router.post("/", async (req, res) => {
   const { vehicle_id, driver_name, passengers, start_location, end_location, start_time, end_time } = req.body;
 
   if (!vehicle_id || !driver_name || !start_time || !end_time) {
@@ -39,7 +39,7 @@ router.post("/", authMiddleware, async (req, res) => {
 });
 
 // Dohvatanje svih putnih naloga (DOSTUPNO SVIM KORISNICIMA)
-router.get("/", authMiddleware, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const trips = await Trip.getAll();
     res.json(trips);

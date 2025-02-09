@@ -38,6 +38,10 @@ const VehicleList = () => {
     }
   };
 
+  const toggleDetails = (vehicleId) => {
+    setExpandedVehicle(expandedVehicle === vehicleId ? null : vehicleId);
+  };
+
   return (
     <div className="max-w-5xl mx-auto p-6 bg-gray-100 rounded-lg shadow-lg">
       <h1 className="text-3xl font-bold text-center mb-6">Lista vozila</h1>
@@ -80,7 +84,7 @@ const VehicleList = () => {
             <p className="text-gray-500">{vehicle.fuel_type}</p>
 
             <div className="mt-3 flex gap-2">
-              <button onClick={() => setExpandedVehicle(vehicle.id)} className="bg-gray-300 hover:bg-gray-400 px-3 py-1 rounded">
+              <button onClick={() => toggleDetails(vehicle.id)} className="bg-gray-300 hover:bg-gray-400 px-3 py-1 rounded">
                 {expandedVehicle === vehicle.id ? "Sakrij" : "Detalji"}
               </button>
 
